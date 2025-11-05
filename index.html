@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0f">
+  <title>Aorgy01 – Gen Z & Alpha Webapp</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <meta name="description" content="Aorgy01 – one-screen PWA with Prompt, Signals, and bottom nav.">
+  <style>/* Inline critical CSS for faster first paint */</style>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="Aorgy logo" class="logo" width="28" height="28">
+      <h1>Aorgy01</h1>
+    </div>
+    <button id="themeToggle" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+  </header>
+
+  <main id="view-root">
+    <!-- Home -->
+    <section id="view-home" class="view active" aria-label="Home">
+      <div class="hero">
+        <h2>สวัสดี Bossแจ๊บ 👋</h2>
+        <p>พร้อมพิมพ์ไอเดียได้ไม่จำกัด – แล้วดู UI โผล่ทันที</p>
+      </div>
+
+      <div class="prompt-card">
+        <label for="promptBox" class="label">Prompt (ไม่จำกัดอักขระ)</label>
+        <textarea id="promptBox" placeholder="พิมพ์ไอเดียของคุณ... แล้วกด 'Run' เพื่อดู UI ตัวอย่าง"></textarea>
+        <div class="prompt-actions">
+          <button id="runPrompt" class="primary">Run</button>
+          <button id="clearPrompt" class="ghost">Clear</button>
+        </div>
+      </div>
+
+      <div id="uiPreview" class="ui-preview" aria-live="polite">
+        <!-- Live UI mock will render here -->
+      </div>
+
+      <div class="signals">
+        <h3>Signals</h3>
+        <div class="badges">
+          <span class="badge neutral" data-signal="neutral">Neutral</span>
+          <span class="badge riskon" data-signal="riskon">Risk‑on</span>
+          <span class="badge riskoff" data-signal="riskoff">Risk‑off</span>
+          <span class="badge cash" data-signal="cash">Cash</span>
+        </div>
+        <button class="explain" id="explainBtn">Explain</button>
+      </div>
+    </section>
+
+    <!-- Explore -->
+    <section id="view-explore" class="view" aria-label="Explore">
+      <h2>Explore</h2>
+      <div class="chips">
+        <button class="chip">Gold</button>
+        <button class="chip">Bitcoin</button>
+        <button class="chip">Cash</button>
+        <button class="chip">Signals</button>
+      </div>
+      <div class="grid">
+        <div class="card">🔥 เทรนด์มาแรงวันนี้</div>
+        <div class="card">💡 ไอเดียจากชุมชน</div>
+        <div class="card">📈 Dashboard ตัวอย่าง</div>
+      </div>
+    </section>
+
+    <!-- Create -->
+    <section id="view-create" class="view" aria-label="Create">
+      <h2>Create</h2>
+      <p>เทมเพลตเริ่มเร็ว:</p>
+      <div class="templates">
+        <button class="tpl" data-tpl="gold">Hold Gold UI</button>
+        <button class="tpl" data-tpl="btc">Hold Bitcoin UI</button>
+        <button class="tpl" data-tpl="cash">Hold Cash UI</button>
+      </div>
+    </section>
+
+    <!-- Signals -->
+    <section id="view-signals" class="view" aria-label="Signals">
+      <h2>Signals</h2>
+      <ul class="signal-list">
+        <li><strong>Risk‑off เข้ม</strong> – DXY↑, VIX↑, HYG/LQD↓, TLT↑, GOLD↑</li>
+        <li><strong>พักเงินสด</strong> – DXY↑ คู่กับจุดพักตลาด</li>
+        <li><strong>Risk‑on</strong> – IWM/SPY↑, SOXX/SPY↑</li>
+        <li><strong>กลางๆ (Neutral)</strong> – ไม่มีสัญญาณแรงชัด</li>
+      </ul>
+    </section>
+
+    <!-- Profile -->
+    <section id="view-profile" class="view" aria-label="Profile">
+      <h2>Profile</h2>
+      <div class="profile-box">
+        <div class="avatar">@Bossแจ๊บ</div>
+        <div class="prefs">
+          <label class="toggle"><input type="checkbox" id="notifToggle"> แจ้งเตือนแบบมีคุณค่า (9:00–21:00)</label>
+          <label>Accent Color: <input type="color" id="accentPicker" value="#7c5cff"></label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Main">
+    <button data-view="home" class="nav-btn active">Home</button>
+    <button data-view="explore" class="nav-btn">Explore</button>
+    <button data-view="create" class="nav-btn">Create</button>
+    <button data-view="signals" class="nav-btn">Signals</button>
+    <button data-view="profile" class="nav-btn">Profile</button>
+  </nav>
+
+  <div id="modal" class="modal" hidden>
+    <div class="sheet">
+      <h3>อธิบายสัญญาณ</h3>
+      <p>สัญญาณ 4 แบบถูกสรุปจากอัตราส่วน/ตัวชี้วัด (เช่น HYG/LQD, IWM/SPY, DXY, VIX ฯลฯ) เพื่อให้เป็นภาษาคน</p>
+      <button id="closeModal" class="primary">ปิด</button>
+    </div>
+  </div>
+
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+    }
+  </script>
+</body>
+</html>
